@@ -28,8 +28,13 @@ cp target/release/claude-profile "$INSTALL_DIR/"
 # 设置执行权限
 chmod +x "$INSTALL_DIR/claude-profile"
 
+# 创建短别名 ccp
+ln -sf "$INSTALL_DIR/claude-profile" "$INSTALL_DIR/ccp"
+
 echo ""
-echo "安装完成: $INSTALL_DIR/claude-profile"
+echo "安装完成:"
+echo "  $INSTALL_DIR/claude-profile"
+echo "  $INSTALL_DIR/ccp (短别名)"
 echo ""
 
 # 检查是否在 PATH 中
@@ -41,5 +46,5 @@ if [[ ":$PATH:" != *":$INSTALL_DIR:"* ]]; then
     echo "或者临时生效:"
     echo "  export PATH=\"$INSTALL_DIR:\$PATH\""
 else
-    echo "claude-profile 已可用，运行 'claude-profile --help' 查看用法"
+    echo "ccp 已可用，运行 'ccp --help' 查看用法"
 fi
