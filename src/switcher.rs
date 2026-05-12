@@ -120,6 +120,44 @@ impl Switcher {
         Ok(())
     }
 
+    /// 开启或关闭 yolo 模式
+    /// yolo 模式会跳过危险操作的确认提示
+    pub fn set_yolo(&self, enabled: bool) -> Result<()> {
+        // 读取当前 settings.json
+        let settings_path = &self.paths.settings_json_path;
+        if !settings_path.exists() {
+            return Err(ProfileError::PathError(
+                "未找到 settings.json，请先创建一个 profile 并切换".to_string()
+            ));
+        }
+
+        let content = fs::read_to_string(settings_path)?;
+        let mut settings: serde_json::Value = serde_json::from_str(&content)?;
+
+        // 修改 skipDangerousModePermissionPrompt 字段
+        if let Some(obj) = settings.as_object_mut() {
+            obj.insert(
+                "skipDangerousModePermissionPrompt".to_string(),
+                serde_json::Value::Bool(enabled),
+            );
+        }
+
+        // 写回文件
+        let new_content = serde_json::to_string_pretty(&settings)?;
+        write_atomic(settings_path, new_content.as_bytes())?;
+
+        if enabled {
+            println!("Yolo 模式已开启 🚀");
+            println!("危险操作将不再提示确认");
+        } else {
+            println!("安全模式已开启 🛡️");
+            println!("危险操作将需要确认");
+        }
+        println!("重启 Claude Code 后生效");
+
+        Ok(())
+    }
+
     /// Check if settings.json has been modified outside the tool
     fn check_dirty(&self) -> Result<()> {
         if !self.paths.settings_json_path.exists() {

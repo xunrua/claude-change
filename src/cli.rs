@@ -81,6 +81,12 @@ pub enum Commands {
         #[command(subcommand)]
         action: HookAction,
     },
+
+    /// 开启 yolo 模式（跳过危险操作确认提示）
+    Yolo,
+
+    /// 关闭 yolo 模式（恢复安全模式，危险操作需要确认）
+    Safe,
 }
 
 #[derive(Subcommand)]
@@ -115,6 +121,8 @@ pub fn run() -> Result<()> {
             HookAction::Install => cmd_hook_install(&switcher),
             HookAction::Uninstall => cmd_hook_uninstall(&switcher),
         },
+        Commands::Yolo => switcher.set_yolo(true),
+        Commands::Safe => switcher.set_yolo(false),
     }
 }
 
