@@ -91,7 +91,7 @@ jobs:
         with:
           path: artifacts
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: claude-profile v${{ steps.version.outputs.VERSION }}
           body: ${{ steps.changelog.outputs.BODY }}
