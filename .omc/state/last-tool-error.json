@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"ccp yolo 2>&1\",\"description\":\"Test yolo command\"}",
-  "error": "Exit code 137",
-  "timestamp": "2026-05-12T14:03:20.055Z",
-  "retry_count": 2
-}
