@@ -108,8 +108,8 @@ pub fn run() -> Result<()> {
         Commands::Remove { name, yes } => cmd_remove(&switcher, &name, yes),
         #[cfg(feature = "tui")]
         Commands::Tui => {
-            println!("TUI not yet implemented");
-            Ok(())
+            // 启动 TUI 交互界面
+            crate::tui::run_tui()
         }
         Commands::Hook { action } => match action {
             HookAction::Install => cmd_hook_install(&switcher),

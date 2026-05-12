@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cargo check 2>&1\",\"timeout\":120000,\"description\":\"Check TUI compilation\"}",
+  "error": "Exit code 101\n    Checking claude-profile v0.1.0 (/Users/sun/Developer/claude-profile)\nerror[E0433]: failed to resolve: could not find `tui` in the crate root\n   --> src/cli.rs:112:20\n    |\n112 |             crate::tui::run_tui()\n    |                    ^^^ could not find `tui` in the crate root\n\nFor more information about this error, try `rustc --explain E0433`.\nerror: could not compile `claude-profile` (lib) due to 1 previous error",
+  "timestamp": "2026-05-12T13:21:38.785Z",
+  "retry_count": 1
+}
