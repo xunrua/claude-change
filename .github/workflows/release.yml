@@ -86,7 +86,7 @@ jobs:
         id: changelog
         run: |
           VERSION="${{ steps.version.outputs.VERSION }}"
-          CHANGELOG=$(awk "/\[$VERSION\]/,/\[0\./" CHANGELOG.md | head -n -1 | tail -n +2)
+          CHANGELOG=$(awk "/^## \[$VERSION\]/{found=1; next} found && /^## \[/{exit} found" CHANGELOG.md)
           echo "BODY<<EOFMARKER" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOFMARKER" >> $GITHUB_OUTPUT
