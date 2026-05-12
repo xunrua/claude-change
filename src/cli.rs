@@ -1,12 +1,12 @@
-use crate::switcher::Switcher;
-use crate::profile::{mask_api_key, Profile};
 use crate::error::Result;
+use crate::profile::{Profile, mask_api_key};
+use crate::switcher::Switcher;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
 #[command(name = "claude-profile")]
 #[command(about = "Manage Claude Code configuration profiles")]
-#[command(version = "0.1.0")]
+#[command(version)]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Commands,
@@ -103,9 +103,7 @@ pub fn run() -> Result<()> {
 
     match cli.command {
         Commands::List => cmd_list(&switcher),
-        Commands::Switch { name, dry_run, force } => {
-            switcher.switch_to(&name, dry_run, force)
-        }
+        Commands::Switch { name, dry_run, force } => switcher.switch_to(&name, dry_run, force),
         Commands::Rollback => switcher.rollback(),
         Commands::Import { file, name } => cmd_import(&switcher, &file, &name),
         Commands::Validate { name } => cmd_validate(&switcher, &name),
@@ -136,7 +134,7 @@ fn cmd_list(switcher: &Switcher) -> Result<()> {
         return Ok(());
     }
 
-    println!("{:<12} {:<20} {}", "ACTIVE", "NAME", "DESCRIPTION");
+    println!("{:<12} {:<20} DESCRIPTION", "ACTIVE", "NAME");
     println!("{}", "-".repeat(60));
 
     for (profile, is_active) in profiles {
@@ -283,11 +281,7 @@ fn prompt_with_default(msg: &str, default: &str) -> Result<String> {
     let mut input = String::new();
     std::io::stdin().read_line(&mut input)?;
     let trimmed = input.trim();
-    Ok(if trimmed.is_empty() {
-        default.to_string()
-    } else {
-        trimmed.to_string()
-    })
+    Ok(if trimmed.is_empty() { default.to_string() } else { trimmed.to_string() })
 }
 
 fn cmd_remove(switcher: &Switcher, name: &str, yes: bool) -> Result<()> {
@@ -315,11 +309,9 @@ fn cmd_remove(switcher: &Switcher, name: &str, yes: bool) -> Result<()> {
 /// 将 hook 脚本复制到 ~/.claude/hooks/ 目录
 fn cmd_hook_install(switcher: &Switcher) -> Result<()> {
     // 获取 Claude Code 配置目录
-    let claude_dir = switcher.paths.settings_json_path
-        .parent()
-        .ok_or_else(|| crate::error::ProfileError::PathError(
-            "无法获取 Claude Code 配置目录".to_string()
-        ))?;
+    let claude_dir = switcher.paths.settings_json_path.parent().ok_or_else(|| {
+        crate::error::ProfileError::PathError("无法获取 Claude Code 配置目录".to_string())
+    })?;
 
     crate::hook::install_hook(claude_dir)
 }
@@ -327,11 +319,9 @@ fn cmd_hook_install(switcher: &Switcher) -> Result<()> {
 /// 卸载 Claude Code hook
 /// 从 ~/.claude/hooks/ 目录移除 hook 脚本
 fn cmd_hook_uninstall(switcher: &Switcher) -> Result<()> {
-    let claude_dir = switcher.paths.settings_json_path
-        .parent()
-        .ok_or_else(|| crate::error::ProfileError::PathError(
-            "无法获取 Claude Code 配置目录".to_string()
-        ))?;
+    let claude_dir = switcher.paths.settings_json_path.parent().ok_or_else(|| {
+        crate::error::ProfileError::PathError("无法获取 Claude Code 配置目录".to_string())
+    })?;
 
     crate::hook::uninstall_hook(claude_dir)
 }

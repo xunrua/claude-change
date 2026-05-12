@@ -1,7 +1,7 @@
 use crate::backup::{backup_current, backup_retention_count, prune_backups, rollback};
-use crate::config::{write_atomic, ConfigPaths};
+use crate::config::{ConfigPaths, write_atomic};
 use crate::error::{ProfileError, Result};
-use crate::profile::{list_profiles, Profile};
+use crate::profile::{Profile, list_profiles};
 use crate::validation::validate_profile;
 use std::fs;
 
@@ -49,13 +49,20 @@ impl Switcher {
 
         if dry_run {
             println!("[DRY RUN] Would switch to profile: {}", profile_name);
-            println!("[DRY RUN] Settings would be written to: {}", self.paths.settings_json_path.display());
+            println!(
+                "[DRY RUN] Settings would be written to: {}",
+                self.paths.settings_json_path.display()
+            );
             if let Some(env) = &profile.settings.env {
                 if let Some(url) = env.get("ANTHROPIC_BASE_URL") {
                     println!("[DRY RUN] Base URL: {}", url);
                 }
                 if let Some(key) = env.get("ANTHROPIC_AUTH_TOKEN") {
-                    println!("[DRY RUN] API Key: {}...{}", &key[..key.len().min(4)], &key[key.len().saturating_sub(4)..]);
+                    println!(
+                        "[DRY RUN] API Key: {}...{}",
+                        &key[..key.len().min(4)],
+                        &key[key.len().saturating_sub(4)..]
+                    );
                 }
             }
             return Ok(());
@@ -63,7 +70,8 @@ impl Switcher {
 
         // Backup current settings
         if self.paths.settings_json_path.exists() {
-            let backup_path = backup_current(&self.paths.settings_json_path, &self.paths.backups_dir)?;
+            let backup_path =
+                backup_current(&self.paths.settings_json_path, &self.paths.backups_dir)?;
             println!("Backup created: {}", backup_path.display());
 
             // Prune old backups
@@ -107,11 +115,7 @@ impl Switcher {
         }
         let content = fs::read_to_string(&self.paths.active_profile_file)?;
         let name = content.trim().to_string();
-        if name.is_empty() {
-            Ok(None)
-        } else {
-            Ok(Some(name))
-        }
+        if name.is_empty() { Ok(None) } else { Ok(Some(name)) }
     }
 
     /// Set the active profile name
@@ -129,7 +133,7 @@ impl Switcher {
         let settings_path = &self.paths.settings_json_path;
         if !settings_path.exists() {
             return Err(ProfileError::PathError(
-                "未找到 settings.json，请先创建一个 profile 并切换".to_string()
+                "未找到 settings.json，请先创建一个 profile 并切换".to_string(),
             ));
         }
 

@@ -45,16 +45,10 @@ fn draw_too_small(f: &mut Frame, area: Rect) {
 /// 绘制标题栏
 fn draw_header(f: &mut Frame, area: Rect) {
     let title = Paragraph::new(" Claude Profile Manager ")
-        .style(
-            Style::default()
-                .fg(Color::Cyan)
-                .add_modifier(Modifier::BOLD),
-        )
+        .style(Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))
         .alignment(Alignment::Center)
         .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .border_style(Style::default().fg(Color::Cyan)),
+            Block::default().borders(Borders::ALL).border_style(Style::default().fg(Color::Cyan)),
         );
     f.render_widget(title, area);
 }
@@ -105,10 +99,7 @@ fn draw_profile_list(f: &mut Frame, app: &App, area: Rect) {
 
             // 选中项高亮
             let style = if i == app.selected {
-                Style::default()
-                    .bg(Color::Blue)
-                    .fg(Color::White)
-                    .add_modifier(Modifier::BOLD)
+                Style::default().bg(Color::Blue).fg(Color::White).add_modifier(Modifier::BOLD)
             } else {
                 Style::default()
             };
@@ -225,9 +216,7 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
         vec![Line::styled("未选择 profile", Style::default().fg(Color::Gray))]
     };
 
-    let paragraph = Paragraph::new(content)
-        .wrap(Wrap { trim: true })
-        .block(block);
+    let paragraph = Paragraph::new(content).wrap(Wrap { trim: true }).block(block);
 
     f.render_widget(paragraph, area);
 }
@@ -235,10 +224,6 @@ fn draw_preview(f: &mut Frame, app: &App, area: Rect) {
 /// 绘制底部状态栏
 fn draw_status_bar(f: &mut Frame, app: &App, area: Rect) {
     let status = Paragraph::new(app.status_message.as_str())
-        .style(
-            Style::default()
-                .fg(Color::White)
-                .bg(Color::DarkGray),
-        );
+        .style(Style::default().fg(Color::White).bg(Color::DarkGray));
     f.render_widget(status, area);
 }

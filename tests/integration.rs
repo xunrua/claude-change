@@ -130,10 +130,7 @@ fn test_backup_retention() {
     assert_eq!(removed, 2);
 
     // 验证只剩 3 个
-    let remaining: Vec<_> = fs::read_dir(&backups_dir)
-        .unwrap()
-        .filter_map(|e| e.ok())
-        .collect();
+    let remaining: Vec<_> = fs::read_dir(&backups_dir).unwrap().filter_map(|e| e.ok()).collect();
     assert_eq!(remaining.len(), 3);
 }
 

@@ -8,21 +8,21 @@ use super::app::App;
 /// 返回 true 表示用户请求退出应用程序
 pub fn handle_events(app: &mut App) -> Result<bool> {
     // 使用 100ms 超时，使界面保持响应同时不阻塞
-    if event::poll(Duration::from_millis(100))? {
-        if let Event::Key(key) = event::read()? {
-            // 只处理按键按下事件，忽略释放事件
-            if key.kind != KeyEventKind::Press {
-                return Ok(false);
-            }
-
-            // 如果有确认对话框显示，优先处理确认相关按键
-            if app.show_confirm {
-                return handle_confirm_dialog(app, key.code);
-            }
-
-            // 处理常规导航按键
-            return handle_navigation(app, key.code);
+    if event::poll(Duration::from_millis(100))?
+        && let Event::Key(key) = event::read()?
+    {
+        // 只处理按键按下事件，忽略释放事件
+        if key.kind != KeyEventKind::Press {
+            return Ok(false);
         }
+
+        // 如果有确认对话框显示，优先处理确认相关按键
+        if app.show_confirm {
+            return handle_confirm_dialog(app, key.code);
+        }
+
+        // 处理常规导航按键
+        return handle_navigation(app, key.code);
     }
 
     Ok(false)

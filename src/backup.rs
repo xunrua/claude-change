@@ -39,12 +39,7 @@ pub fn get_most_recent_backup(backups_dir: &Path) -> Result<PathBuf> {
 
     let mut backups: Vec<PathBuf> = fs::read_dir(backups_dir)?
         .filter_map(|e| e.ok().map(|e| e.path()))
-        .filter(|p| {
-            p.extension()
-                .and_then(|e| e.to_str())
-                .map(|e| e == "json")
-                .unwrap_or(false)
-        })
+        .filter(|p| p.extension().and_then(|e| e.to_str()).map(|e| e == "json").unwrap_or(false))
         .collect();
 
     if backups.is_empty() {
@@ -98,8 +93,5 @@ pub fn prune_backups(backups_dir: &Path, keep_count: usize) -> Result<usize> {
 
 /// Get backup retention count from env or default
 pub fn backup_retention_count() -> usize {
-    std::env::var("CLAUDE_PROFILE_BACKUP_COUNT")
-        .ok()
-        .and_then(|s| s.parse().ok())
-        .unwrap_or(50)
+    std::env::var("CLAUDE_PROFILE_BACKUP_COUNT").ok().and_then(|s| s.parse().ok()).unwrap_or(50)
 }

@@ -8,10 +8,10 @@ pub mod ui;
 use crate::error::Result;
 use app::App;
 use events::handle_events;
-use ratatui::crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
-};
 use ratatui::crossterm::ExecutableCommand;
+use ratatui::crossterm::terminal::{
+    EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode,
+};
 use ratatui::prelude::*;
 use std::io;
 
@@ -42,7 +42,7 @@ pub fn run_tui() -> Result<()> {
 /// TUI 主循环：持续渲染界面并处理用户输入
 fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App) -> Result<()> {
     // 最后一次渲染的界面，用于终端恢复时重绘
-    let _last_frame: RefCell<Option< ratatui::Frame>> = RefCell::new(None);
+    let _last_frame: RefCell<Option<ratatui::Frame>> = RefCell::new(None);
 
     loop {
         // 绘制当前界面

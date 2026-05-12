@@ -25,10 +25,10 @@ impl Profile {
         let content = std::fs::read_to_string(path)?;
         let mut profile: Self = toml::from_str(&content)?;
         // Derive name from filename stem if not set in the file
-        if profile.name.is_empty() {
-            if let Some(stem) = path.file_stem().and_then(|s| s.to_str()) {
-                profile.name = stem.to_string();
-            }
+        if profile.name.is_empty()
+            && let Some(stem) = path.file_stem().and_then(|s| s.to_str())
+        {
+            profile.name = stem.to_string();
         }
         Ok(profile)
     }
@@ -53,11 +53,7 @@ impl Profile {
     /// Create a Profile from existing settings.json content
     pub fn from_settings_json(name: &str, json_content: &str) -> Result<Self> {
         let settings: ClaudeSettings = serde_json::from_str(json_content)?;
-        Ok(Self {
-            name: name.to_string(),
-            description: None,
-            settings,
-        })
+        Ok(Self { name: name.to_string(), description: None, settings })
     }
 }
 

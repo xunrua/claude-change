@@ -18,20 +18,17 @@ pub fn validate_profile(profile: &Profile) -> Result<()> {
     }
 
     // Validate model if present
-    if let Some(model) = &profile.settings.model {
-        if model.is_empty() {
-            return Err(ProfileError::InvalidApiKey(
-                "Model cannot be empty".to_string(),
-            ));
-        }
+    if let Some(model) = &profile.settings.model
+        && model.is_empty()
+    {
+        return Err(ProfileError::InvalidApiKey("Model cannot be empty".to_string()));
     }
 
     Ok(())
 }
 
 fn validate_url(url_str: &str) -> Result<()> {
-    Url::parse(url_str)
-        .map_err(|e| ProfileError::InvalidUrl(format!("{}: {}", url_str, e)))?;
+    Url::parse(url_str).map_err(|e| ProfileError::InvalidUrl(format!("{}: {}", url_str, e)))?;
     Ok(())
 }
 
@@ -41,12 +38,10 @@ fn validate_api_key(key: &str) -> Result<()> {
     let has_valid_prefix = valid_prefixes.iter().any(|prefix| key.starts_with(prefix));
 
     if !has_valid_prefix && key.len() < 10 {
-        return Err(ProfileError::InvalidApiKey(
-            format!(
-                "API key should start with 'sk-' or 'sk-ant-' and be at least 10 characters long (got {} chars)",
-                key.len()
-            ),
-        ));
+        return Err(ProfileError::InvalidApiKey(format!(
+            "API key should start with 'sk-' or 'sk-ant-' and be at least 10 characters long (got {} chars)",
+            key.len()
+        )));
     }
 
     Ok(())

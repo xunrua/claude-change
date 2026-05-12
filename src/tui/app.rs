@@ -53,10 +53,7 @@ impl App {
 
     /// 获取当前选中 profile 是否已激活
     pub fn is_selected_active(&self) -> bool {
-        self.profiles
-            .get(self.selected)
-            .map(|(_, active)| *active)
-            .unwrap_or(false)
+        self.profiles.get(self.selected).map(|(_, active)| *active).unwrap_or(false)
     }
 
     /// 向下移动选中项
