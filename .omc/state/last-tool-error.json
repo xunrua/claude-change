@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cargo test 2>&1\",\"timeout\":120000,\"description\":\"Run all tests\"}",
-  "error": "Exit code 101\n   Compiling claude-profile v0.1.0 (/Users/sun/Developer/claude-profile)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s\n     Running unittests src/lib.rs (target/debug/deps/claude_profile-3c81d3390326d51e)\n\nrunning 4 tests\ntest validation::tests::test_validate_api_key_invalid ... ok\ntest validation::tests::test_validate_api_key_valid ... ok\ntest validation::tests::test_validate_url_invalid ... ok\ntest validation::tests::test_validate_url_valid ... ok\n\ntest...",
-  "timestamp": "2026-05-12T13:33:23.862Z",
-  "retry_count": 1
+  "tool_input_preview": "{\"command\":\"ccp yolo 2>&1\",\"description\":\"Test yolo command\"}",
+  "error": "Exit code 137",
+  "timestamp": "2026-05-12T14:03:20.055Z",
+  "retry_count": 2
 }

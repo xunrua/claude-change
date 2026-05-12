@@ -214,23 +214,80 @@ fn cmd_show(switcher: &Switcher, name: &str) -> Result<()> {
     Ok(())
 }
 
+/// 交互式创建新 profile
+/// 引导用户输入 API provider、base URL、API key 等关键配置
 fn cmd_add(switcher: &Switcher, name: &str) -> Result<()> {
     let profile_path = Profile::profile_path(&switcher.paths.profiles_dir, name);
     if profile_path.exists() {
         return Err(crate::error::ProfileError::ProfileAlreadyExists(name.to_string()));
     }
 
+    println!("创建 profile '{}'\n", name);
+
+    // 引导用户输入配置
+    let desc = prompt("描述 (如 'Kimi 官方 API'): ")?;
+
+    let base_url = prompt("Base URL (如 https://api.kimi.com/coding/): ")?;
+    if !base_url.is_empty() {
+        // 验证 URL 格式
+        if let Err(e) = url::Url::parse(&base_url) {
+            println!("警告: URL 格式似乎不正确: {}", e);
+        }
+    }
+
+    let api_key = prompt("API Key (如 sk-xxx): ")?;
+
+    let model = prompt_with_default("模型", "opus[1m]")?;
+
+    let mut env = std::collections::HashMap::new();
+    if !base_url.is_empty() {
+        env.insert("ANTHROPIC_BASE_URL".to_string(), base_url);
+    }
+    if !api_key.is_empty() {
+        env.insert("ANTHROPIC_AUTH_TOKEN".to_string(), api_key);
+    }
+
     let profile = Profile {
         name: name.to_string(),
-        description: Some("New profile".to_string()),
-        settings: Default::default(),
+        description: if desc.is_empty() { None } else { Some(desc) },
+        settings: crate::settings::ClaudeSettings {
+            env: if env.is_empty() { None } else { Some(env) },
+            model: if model.is_empty() { None } else { Some(model) },
+            ..Default::default()
+        },
     };
 
     profile.save(&profile_path)?;
-    println!("Created profile '{}'", name);
-    println!("Edit it at: {}", profile_path.display());
+    println!("\n✓ Profile '{}' 已创建", name);
+    println!("  保存位置: {}", profile_path.display());
+    println!("  使用 'ccp switch {}' 切换到此配置", name);
 
     Ok(())
+}
+
+/// 提示用户输入（不带默认值）
+fn prompt(msg: &str) -> Result<String> {
+    use std::io::Write;
+    print!("{}", msg);
+    std::io::stdout().flush()?;
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input)?;
+    Ok(input.trim().to_string())
+}
+
+/// 提示用户输入（带默认值，直接回车使用默认值）
+fn prompt_with_default(msg: &str, default: &str) -> Result<String> {
+    use std::io::Write;
+    print!("{} [{}]: ", msg, default);
+    std::io::stdout().flush()?;
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input)?;
+    let trimmed = input.trim();
+    Ok(if trimmed.is_empty() {
+        default.to_string()
+    } else {
+        trimmed.to_string()
+    })
 }
 
 fn cmd_remove(switcher: &Switcher, name: &str, yes: bool) -> Result<()> {

@@ -123,6 +123,8 @@ impl Switcher {
     /// 开启或关闭 yolo 模式
     /// yolo 模式会跳过危险操作的确认提示
     pub fn set_yolo(&self, enabled: bool) -> Result<()> {
+        use crate::backup::backup_current;
+
         // 读取当前 settings.json
         let settings_path = &self.paths.settings_json_path;
         if !settings_path.exists() {
@@ -130,6 +132,9 @@ impl Switcher {
                 "未找到 settings.json，请先创建一个 profile 并切换".to_string()
             ));
         }
+
+        // 先备份当前配置，避免 dirty check 误报
+        backup_current(settings_path, &self.paths.backups_dir)?;
 
         let content = fs::read_to_string(settings_path)?;
         let mut settings: serde_json::Value = serde_json::from_str(&content)?;
