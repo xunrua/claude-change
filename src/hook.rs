@@ -1,17 +1,14 @@
 // Hook 管理模块
 // 负责安装和卸载 Claude Code 的 UserPromptSubmit hook
 
-use crate::config::write_atomic;
-use crate::error::{ProfileError, Result};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use crate::error::Result;
 use std::path::Path;
 
 /// Hook 脚本文件名
 const HOOK_SCRIPT_NAME: &str = "claude-profile-hook.mjs";
 
 /// 安装 hook
-/// 将 hook 脚本复制到 Claude Code hooks 目录，并在 settings.json 中注册
+/// 将 hook 脚本复制到 Claude Code hooks 目录
 pub fn install_hook(claude_dir: &Path) -> Result<()> {
     let hooks_dir = claude_dir.join("hooks");
     std::fs::create_dir_all(&hooks_dir)?;

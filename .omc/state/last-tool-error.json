@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cargo check 2>&1\",\"timeout\":120000,\"description\":\"Check TUI compilation\"}",
-  "error": "Exit code 101\n    Checking claude-profile v0.1.0 (/Users/sun/Developer/claude-profile)\nerror[E0433]: failed to resolve: could not find `tui` in the crate root\n   --> src/cli.rs:112:20\n    |\n112 |             crate::tui::run_tui()\n    |                    ^^^ could not find `tui` in the crate root\n\nFor more information about this error, try `rustc --explain E0433`.\nerror: could not compile `claude-profile` (lib) due to 1 previous error",
-  "timestamp": "2026-05-12T13:21:38.785Z",
+  "tool_input_preview": "{\"command\":\"cargo test 2>&1\",\"timeout\":120000,\"description\":\"Run all tests\"}",
+  "error": "Exit code 101\n   Compiling claude-profile v0.1.0 (/Users/sun/Developer/claude-profile)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.33s\n     Running unittests src/lib.rs (target/debug/deps/claude_profile-3c81d3390326d51e)\n\nrunning 4 tests\ntest validation::tests::test_validate_api_key_invalid ... ok\ntest validation::tests::test_validate_api_key_valid ... ok\ntest validation::tests::test_validate_url_invalid ... ok\ntest validation::tests::test_validate_url_valid ... ok\n\ntest...",
+  "timestamp": "2026-05-12T13:33:23.862Z",
   "retry_count": 1
 }
