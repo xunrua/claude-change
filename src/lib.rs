@@ -1,4 +1,5 @@
 pub mod backup;
+pub mod cli;
 pub mod config;
 pub mod error;
 pub mod profile;

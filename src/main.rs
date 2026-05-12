@@ -1,4 +1,6 @@
 fn main() {
-    println!("claude-profile: Claude Code configuration profile manager");
-    println!("Run 'claude-profile --help' for usage information.");
+    if let Err(e) = claude_profile::cli::run() {
+        eprintln!("Error: {}", e);
+        std::process::exit(1);
+    }
 }
