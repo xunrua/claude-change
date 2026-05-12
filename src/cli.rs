@@ -246,12 +246,27 @@ fn cmd_remove(switcher: &Switcher, name: &str, yes: bool) -> Result<()> {
     Ok(())
 }
 
-fn cmd_hook_install(_switcher: &Switcher) -> Result<()> {
-    println!("Hook install not yet implemented");
-    Ok(())
+/// 安装 Claude Code hook
+/// 将 hook 脚本复制到 ~/.claude/hooks/ 目录
+fn cmd_hook_install(switcher: &Switcher) -> Result<()> {
+    // 获取 Claude Code 配置目录
+    let claude_dir = switcher.paths.settings_json_path
+        .parent()
+        .ok_or_else(|| crate::error::ProfileError::PathError(
+            "无法获取 Claude Code 配置目录".to_string()
+        ))?;
+
+    crate::hook::install_hook(claude_dir)
 }
 
-fn cmd_hook_uninstall(_switcher: &Switcher) -> Result<()> {
-    println!("Hook uninstall not yet implemented");
-    Ok(())
+/// 卸载 Claude Code hook
+/// 从 ~/.claude/hooks/ 目录移除 hook 脚本
+fn cmd_hook_uninstall(switcher: &Switcher) -> Result<()> {
+    let claude_dir = switcher.paths.settings_json_path
+        .parent()
+        .ok_or_else(|| crate::error::ProfileError::PathError(
+            "无法获取 Claude Code 配置目录".to_string()
+        ))?;
+
+    crate::hook::uninstall_hook(claude_dir)
 }
