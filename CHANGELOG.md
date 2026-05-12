@@ -1,5 +1,7 @@
 # Changelog
 
+[**中文**](CHANGELOG.zh-CN.md) | English
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
@@ -22,4 +24,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - One-click install script with binary download and source build fallback
 - Cross-platform CI (macOS arm64/x86_64, Linux x86_64/aarch64)
 - Automated GitHub Release workflow with binary uploads
-- Chinese/English bilingual README
