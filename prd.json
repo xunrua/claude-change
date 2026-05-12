@@ -1,0 +1,113 @@
+{
+  "project": "claude-profile",
+  "description": "Rust CLI/TUI tool for managing Claude Code configuration profiles",
+  "stories": [
+    {
+      "id": "US-001",
+      "title": "Project skeleton and domain layer",
+      "description": "Initialize Rust project with Cargo.toml, core structs (Profile, ClaudeSettings, ConfigPaths), error types, and atomic file write helper",
+      "acceptanceCriteria": [
+        "cargo init creates project with name claude-profile",
+        "Cargo.toml includes all dependencies (clap, serde, toml, dirs, url, thiserror, anyhow, chrono, fs4 optional)",
+        "src/profile.rs defines Profile struct with serde derive and [settings] section",
+        "src/settings.rs defines ClaudeSettings struct matching actual settings.json with #[serde(flatten)] extra",
+        "src/config.rs defines ConfigPaths with XDG resolution and CLAUDE_CONFIG_DIR override",
+        "src/error.rs defines unified error type with thiserror",
+        "Atomic write helper exists and creates temp file + renames",
+        "cargo build compiles with zero errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-002",
+      "title": "Core switch logic - backup, switch, rollback",
+      "description": "Implement backup creation, profile switching (full-file replacement), rollback, file locking, and dirty check",
+      "acceptanceCriteria": [
+        "backup_current() copies settings.json to backups/ with timestamp",
+        "switch_to() validates, acquires file lock, backs up, writes profile atomically, updates active_profile marker",
+        "rollback() restores most recent backup and updates active_profile marker",
+        "File locking with fs4 prevents concurrent switches",
+        "Dirty check warns if settings.json changed since last backup (requires --force)",
+        "All switch operations are atomic (temp file + rename)",
+        "Hook entry is preserved/re-added after every switch"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-003",
+      "title": "Profile validation and import",
+      "description": "Implement profile validation (URL syntax, API key format) and import from existing settings-*.json files",
+      "acceptanceCriteria": [
+        "validate_profile() checks TOML parse success",
+        "base_url validated as valid URL syntax using url crate",
+        "API key format validated (sk- prefix check)",
+        "import command converts settings-*.json to Profile TOML preserving all keys",
+        "#[serde(flatten)] extra captures unknown settings.json keys",
+        "Validation returns specific error messages for each failure type"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-004",
+      "title": "CLI interface",
+      "description": "Implement CLI commands: list, switch, rollback, import, validate, show, add, remove with clap derive",
+      "acceptanceCriteria": [
+        "claude-profile list shows all profiles with active marker",
+        "claude-profile switch <name> performs switch with output confirmation",
+        "claude-profile switch --dry-run shows preview without modifying files",
+        "claude-profile rollback restores previous config",
+        "claude-profile import <file> --name <name> converts JSON to TOML",
+        "claude-profile validate <name> checks without switching",
+        "claude-profile show <name> displays profile with masked API key",
+        "claude-profile add <name> creates new profile template",
+        "claude-profile remove <name> deletes after confirmation",
+        "All commands return appropriate exit codes (0 success, 1 error)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-005",
+      "title": "TUI interface",
+      "description": "Implement interactive menu with ratatui for profile browsing and switching",
+      "acceptanceCriteria": [
+        "claude-profile tui opens interactive menu",
+        "Arrow keys navigate profile list",
+        "Preview pane shows selected profile details",
+        "Enter triggers switch with confirmation dialog",
+        "q/Esc exits cleanly",
+        "Terminal resize handled gracefully",
+        "Renders correctly in 80x24 terminal"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-006",
+      "title": "Hook integration",
+      "description": "Implement informational hook that detects switch intent and instructs user",
+      "acceptanceCriteria": [
+        "claude-profile hook install adds UserPromptSubmit hook entry",
+        "claude-profile hook uninstall removes hook entry",
+        "Hook installation is idempotent",
+        "Hook detects 'switch to <profile>' pattern in prompt",
+        "Hook responds with instructions (CLI command + restart) without modifying settings.json",
+        "Hook script is copied to ~/.claude/hooks/"
+      ],
+      "passes": false
+    },
+    {
+      "id": "US-007",
+      "title": "Testing and verification",
+      "description": "Unit tests, integration tests, benchmarks for cold start and binary size",
+      "acceptanceCriteria": [
+        "cargo test passes all unit tests",
+        "Profile parse roundtrip test passes",
+        "Backup and rollback test passes",
+        "Validation rejects invalid URLs and API keys",
+        "XDG paths respected on all platforms (mocked)",
+        "Cold start benchmark < 100ms",
+        "Binary size < 5MB (default build) or < 15MB (with all features)"
+      ],
+      "passes": false
+    }
+  ]
+}
