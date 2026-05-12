@@ -18,10 +18,11 @@ pub fn validate_profile(profile: &Profile) -> Result<()> {
     }
 
     // Validate model if present
-    if let Some(model) = &profile.settings.model
-        && model.is_empty()
-    {
-        return Err(ProfileError::InvalidApiKey("Model cannot be empty".to_string()));
+    #[allow(clippy::collapsible_if)]
+    if let Some(model) = &profile.settings.model {
+        if model.is_empty() {
+            return Err(ProfileError::InvalidApiKey("Model cannot be empty".to_string()));
+        }
     }
 
     Ok(())

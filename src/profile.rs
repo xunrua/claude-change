@@ -25,10 +25,11 @@ impl Profile {
         let content = std::fs::read_to_string(path)?;
         let mut profile: Self = toml::from_str(&content)?;
         // Derive name from filename stem if not set in the file
-        if profile.name.is_empty()
-            && let Some(stem) = path.file_stem().and_then(|s| s.to_str())
-        {
-            profile.name = stem.to_string();
+        #[allow(clippy::collapsible_if)]
+        if profile.name.is_empty() {
+            if let Some(stem) = path.file_stem().and_then(|s| s.to_str()) {
+                profile.name = stem.to_string();
+            }
         }
         Ok(profile)
     }
