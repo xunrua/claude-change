@@ -63,7 +63,7 @@ jobs:
           cd target/${{ matrix.target }}/release
           tar czf ${{ matrix.asset_name }}.tar.gz claude-profile
           shasum -a 256 ${{ matrix.asset_name }}.tar.gz > ${{ matrix.asset_name }}.tar.gz.sha256
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.asset_name }}
           path: |
