@@ -87,7 +87,7 @@ jobs:
           echo "BODY<<EOFMARKER" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOFMARKER" >> $GITHUB_OUTPUT
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           path: artifacts
       - name: Create GitHub Release
